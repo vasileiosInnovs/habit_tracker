@@ -44,11 +44,13 @@ class User(Base):
         session.delete(self)
         session.commit()
 
+    @classmethod
     def create(cls, session: Session, **kwargs):
         habit = cls(*kwargs)
         session.add(habit)
         session.commit()
         return habit
     
+    @classmethod
     def get_by_id(cls, session: Session, habit_id):
         return session.query(cls).filter_by(id=habit_id).first()
