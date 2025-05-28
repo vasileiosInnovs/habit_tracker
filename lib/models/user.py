@@ -2,6 +2,7 @@ import datetime
 from sqlalchemy import UniqueConstraint, Column, Integer, String, DateTime
 from lib.models import Base
 import re
+from sqlalchemy.orm import Session
 
 class User(Base):
     __tablename__ = 'users'
@@ -32,3 +33,22 @@ class User(Base):
 
     def __repr__(self):
         return f"<User(id={self.id}, Name='{self.name}', Email Address='{self.email}', Sign Up Date='{self.signup_date}')>"
+    
+    def update(self, session: Session, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+        session.commit()
+
+    def delete(self, session: Session):
+        session.delete(self)
+        session.commit()
+
+    def create(cls, session: Session, **kwargs):
+        habit = cls(*kwargs)
+        session.add(habit)
+        session.commit()
+        return habit
+    
+    def get_by_id(cls, session: Session, habit_id):
+        return session.query(cls).filter_by(id=habit_id).first()
