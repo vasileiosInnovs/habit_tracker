@@ -19,3 +19,9 @@ class Habit(Base):
             f"<Habit Id=(id={self.id}, Name='{self.name}', Description='{self.description}', "
             f"Time Period='{self.time_period}, Category='{self.category}, Frequency={self.frequency}')>"
             )
+
+    def save(self, session):
+        session.add(self)
+        session.commit()
+
+    
