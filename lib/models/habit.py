@@ -1,4 +1,3 @@
-import datetime
 from sqlalchemy import Column, Integer, String
 from lib.models import Base
 
@@ -13,4 +12,4 @@ class Habit(Base):
     frequency = Column(Integer)
 
     def __repr__(self):
-        return f"<User(id={self.id}, Name='{self.name}', Email Address='{self.email}', Sign Up Date='{self.signup_date}')>"
+        return f"<Habit Id=(id={self.id}, Name='{self.name}', Description='{self.description}',Time Period='{self.time_period}, Category='{self.category}, Frequency={self.frequency}')>"
