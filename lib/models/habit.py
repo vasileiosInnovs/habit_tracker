@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from lib.models import Base
+from sqlalchemy.orm import relationship
 
 class Habit(Base):
     __tablename__ = 'habits'
@@ -10,6 +11,8 @@ class Habit(Base):
     time_period = Column(String)
     category = Column(String)
     frequency = Column(Integer)
+
+    logs = relationship("Log", back_populates="habit", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Habit Id=(id={self.id}, Name='{self.name}', Description='{self.description}',Time Period='{self.time_period}, Category='{self.category}, Frequency={self.frequency}')>"
