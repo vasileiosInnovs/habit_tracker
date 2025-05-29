@@ -15,4 +15,7 @@ class Habit(Base):
     logs = relationship("Log", back_populates="habit", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f"<Habit Id=(id={self.id}, Name='{self.name}', Description='{self.description}',Time Period='{self.time_period}, Category='{self.category}, Frequency={self.frequency}')>"
+        return (
+            f"<Habit Id=(id={self.id}, Name='{self.name}', Description='{self.description}', "
+            f"Time Period='{self.time_period}, Category='{self.category}, Frequency={self.frequency}')>"
+            )
