@@ -24,4 +24,10 @@ class Habit(Base):
         session.add(self)
         session.commit()
 
-    
+    def delete(self, session):
+        session.delete(self)
+        session.commit()
+
+    @classmethod
+    def get_by_name(cls, session, name):
+        return session.query(cls).filter_by(name=name).first()
