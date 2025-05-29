@@ -15,7 +15,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    _email = Column(String(55))
+    _email = Column("email", String(55))
     signup_date = Column(DateTime(), default=datetime.datetime.now)
 
     def __init__(self, email=None):
@@ -46,7 +46,7 @@ class User(Base):
 
     @classmethod
     def create(cls, session: Session, **kwargs):
-        habit = cls(*kwargs)
+        habit = cls(**kwargs)
         session.add(habit)
         session.commit()
         return habit
