@@ -1,5 +1,36 @@
 from lib.db.session import session
+from lib.models.user import User
 from lib.models.habit import Habit
+
+def login_or_register():
+    print("\nWelcome to Habit Tracker!")
+    while True:
+        action = input("Do you want to [login] or [register]? ").strip().lower()
+        if action in ("login", "register"):
+            break
+        print("Please enter 'login' or 'register'.")
+
+    username = input("Enter username: ").strip()
+    password = input("Enter password: ").strip()
+
+    if action == "register":
+        if User.get_by_username(session, username):
+            print("Username already exists. Try logging in.")
+            return login_or_register()
+        user = User(username=username, password=password)
+        user.save(session)
+        print("Registration successful. You're now logged in.")
+        return user
+
+    elif action == "login":
+        user = User.get_by_username(session, username)
+        if user and user.password == password:
+            print("Login successful!")
+            return user
+        else:
+            print("Invalid credentials.")
+            return login_or_register()
+
 
 def list_habits():
     habits = session.query(Habit).all()
@@ -10,10 +41,10 @@ def list_habits():
 
 def create_habit():
     name = input("Enter habit name: ")
-    description = input("Enter habit name: ")
-    time_period = input("Enter habit name: ")
-    category = input("Enter habit name: ")
-    frequency = int(input("Enter habit name: "))
+    description = input("Enter a description of the habit: ")
+    time_period = input("Enter time period: ")
+    category = input("Enter habit category: ")
+    frequency = int(input("Enter frequency (daily/weekly): "))
 
     habit = Habit(
         name=name,

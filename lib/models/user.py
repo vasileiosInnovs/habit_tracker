@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy import UniqueConstraint, Column, Integer, String, DateTime
 from lib.models import Base
 import re
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, relationship
 
 class User(Base):
     __tablename__ = 'users'
@@ -18,6 +18,8 @@ class User(Base):
     _email = Column("email", String(55))
     signup_date = Column(DateTime(), default=datetime.datetime.now)
     password = Column(String, nullable=False)
+
+    habits = relationship('Habit', back_populates='user')
 
     def __init__(self, email=None):
         self._email = email
