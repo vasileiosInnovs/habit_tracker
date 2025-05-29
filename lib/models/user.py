@@ -14,9 +14,10 @@ class User(Base):
     )
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    username = Column(String, nullable=False)
     _email = Column("email", String(55))
     signup_date = Column(DateTime(), default=datetime.datetime.now)
+    password = Column(String, nullable=False)
 
     def __init__(self, email=None):
         self._email = email
@@ -32,7 +33,7 @@ class User(Base):
         self._email = email
 
     def __repr__(self):
-        return f"<User(id={self.id}, Name='{self.name}', Email Address='{self.email}', Sign Up Date='{self.signup_date}')>"
+        return f"<User(id={self.id}, Name='{self.username}', Email Address='{self.email}', Sign Up Date='{self.signup_date}')>"
     
     def update(self, session: Session, **kwargs):
         for key, value in kwargs.items():
@@ -52,5 +53,5 @@ class User(Base):
         return habit
     
     @classmethod
-    def get_by_id(cls, session: Session, habit_id):
-        return session.query(cls).filter_by(id=habit_id).first()
+    def get_by_username(cls, session: Session, username):
+        return session.query(cls).filter_by(username=username).first()
