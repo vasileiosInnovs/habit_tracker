@@ -22,9 +22,10 @@ class User(Base):
     habits = relationship('Habit', back_populates='user')
 
     def __init__(self, username, password, email=None):
-        self._email = email
         self.username = username
         self.password = password
+        if email:
+             self.email = email
 
 
     @property
@@ -57,10 +58,10 @@ class User(Base):
 
     @classmethod
     def create(cls, session: Session, **kwargs):
-        habit = cls(**kwargs)
-        session.add(habit)
+        user = cls(**kwargs)
+        session.add(user)
         session.commit()
-        return habit
+        return user
     
     @classmethod
     def get_by_username(cls, session: Session, username):
