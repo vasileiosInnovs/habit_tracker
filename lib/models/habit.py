@@ -2,7 +2,7 @@ from tabulate import tabulate
 from sqlalchemy import Column, Integer, String, ForeignKey
 from lib.models import Base
 from sqlalchemy.orm import relationship
-from lib.models.log import Log
+#from lib.models.log import Log
 
 class Habit(Base):
     __tablename__ = 'habits'
@@ -37,6 +37,8 @@ class Habit(Base):
         return session.query(cls).filter_by(name=name).first()
     
     def view_report(self, session):
+        from lib.models.log import Log
+        
         logs = session.query(Log).filter_by(habit_id=self.id).order_by(Log.timestamp).all()
 
         if not logs:

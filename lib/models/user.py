@@ -19,7 +19,7 @@ class User(Base):
     signup_date = Column(DateTime(), default=datetime.datetime.now)
     password = Column(String, nullable=False)
 
-    habits = relationship('Habit', back_populates='user')
+    habits = relationship('Habit', back_populates='user', cascade="all, delete-orphan")
 
     def __init__(self, username, password, email=None):
         self.username = username

@@ -2,6 +2,7 @@ from sqlalchemy import Integer, Column, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from lib.models import Base
 from lib.models.habit import Habit
+from lib.models.user import User
 from datetime import datetime
 
 class Log(Base):
@@ -19,9 +20,9 @@ class Log(Base):
         return (
             session.query(cls)
             .join(cls.habit)                        
-            .join(cls.habit.user)
+            .join(Habit.user)
             .filter(Habit.name == habit_name)       
-            .filter(Habit.user.has(username=username))
+            .filter(User.username==username)
             .order_by(cls.timestamp)
             .all()
         )

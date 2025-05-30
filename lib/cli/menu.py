@@ -1,8 +1,6 @@
 from tabulate import tabulate
 from lib.db.session import session
 from lib.models.user import User
-from lib.models.habit import Habit
-from lib.models.log import Log
 
 def login_or_register():
     print("\nWelcome to BetterEveryday")
@@ -39,6 +37,8 @@ def login_or_register():
 
 
 def list_habits():
+    from lib.models.habit import Habit
+
     habits = session.query(Habit).all()
     if not habits:
         print("No habits found.")
@@ -52,6 +52,8 @@ def create_habit(user):
     category = input("Enter habit category (e.g. health): ").strip()
     frequency = int(input("Enter frequency (e.g. 7): "))
 
+    from lib.models.habit import Habit
+
     habit = Habit(
         name=name,
         description=description,
@@ -61,7 +63,7 @@ def create_habit(user):
         user_id=user.id 
     )
     habit.save(session)
-    print(f"Habit '{name}' created for {user.username}.")
+    print(f"✅ Habit '{name}' created for {user.username}.")
 
 def main_menu(user):
     print(f"\nWelcome, {user.username}!")
@@ -71,7 +73,8 @@ def main_menu(user):
         print("1. Create a new habit")
         print("2. Log progress")
         print("3. View report")
-        print("4. Quit")
+        print("4. Logout")
+        print("5. Quit")
 
         choice = input("Choose an option: ").strip()
 
@@ -85,18 +88,19 @@ def main_menu(user):
             view_report(user)
 
         elif choice == "4":
+            login_or_register()
+
+        elif choice == "5":
             print("Goodbye!")
             break
 
         else:
             print("❌ Invalid option. Try again.")
 
-def create_habit():
-    name = input("Enter habit name: ").strip()
-    frequency = input("Enter frequency (daily/weekly): ").strip().lower()
-    print(f"Habit '{name}' with {frequency} frequency created.")
-
 def log_progress(user):
+
+    from lib.models.habit import Habit
+
     habits = session.query(Habit).filter_by(user_id=user.id).all()
     if not habits:
         print("You have no habits to log.")
@@ -112,6 +116,8 @@ def log_progress(user):
     except (ValueError, IndexError):
         print("Invalid selection.")
         return
+    
+    from lib.models.log import Log
 
     status = input("Accomplished? [Y/N]: ").strip().upper()
     log = Log(status=status, habit_id=habit.id)
@@ -120,6 +126,8 @@ def log_progress(user):
     print(f"Progress logged for '{habit.name}'.")
 
 def view_report(user):
+    from lib.models.habit import Habit
+
     habits = session.query(Habit).filter_by(user_id=user.id).all()
     if not habits:
         print("No habits found for this user.")
@@ -135,6 +143,8 @@ def view_report(user):
     except (ValueError, IndexError):
         print("Invalid choice.")
         return
+    
+    from lib.models.log import Log
 
     logs = Log.get_logs_for_user_habit(session, user.username, habit.name)
 
