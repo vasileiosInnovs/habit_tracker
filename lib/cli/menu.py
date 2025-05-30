@@ -1,9 +1,11 @@
+from tabulate import tabulate
 from lib.db.session import session
 from lib.models.user import User
 from lib.models.habit import Habit
+from lib.models.log import Log
 
 def login_or_register():
-    print("\nWelcome to Habit Tracker!")
+    print("\nWelcome to BetterEveryday")
     while True:
         action = input("Do you want to [login] or [register]? ").strip().lower()
         if action in ("login", "register"):
@@ -12,10 +14,14 @@ def login_or_register():
 
     username = input("Enter username: ").strip()
     password = input("Enter password: ").strip()
+    email = input("Enter email: ").strip()
 
     if action == "register":
         if User.get_by_username(session, username):
             print("Username already exists. Try logging in.")
+            return login_or_register()
+        elif User.get_by_username(session, email):
+            print("Email already exists.")
             return login_or_register()
         user = User(username=username, password=password)
         user.save(session)
@@ -56,7 +62,9 @@ def create_habit():
     habit.save(session)
     print("Habit created successfully.")
 
-def main_menu():
+def main_menu(user):
+    print(f"\nWelcome, {user}!")
+
     while True:
         print("\n📈 BetterEveryday Habit Tracker")
         print("1. Create a new habit")
@@ -89,10 +97,16 @@ def create_habit():
 
 def log_progress():
     habit_name = input("Enter habit name: ").strip()
-    status = input("Accomplished?: ").strip()
+    status = input("Accomplished?[Y/N]: ").strip()
     print(f"Progress logged for habit {habit_name}.")
 
 def view_report():
     habit_name = input("Enter habit name: ").strip()
-    print(f"Showing report for habit {habit_name}.")
+    logs = Log.get_logs_by_habit(session, habit_name)
 
+    if not logs:
+        print("⚠️ No logs found.")
+        return
+    
+    table = [[log.id, log.habit_name, log.status, log.timestamp.strftime("%Y-%m-%d %H:%M")] for log in logs]
+    print(tabulate(table, headers=['ID', 'Habit', 'Status', 'Timestamp'], tablefmt="fancy_grid"))
