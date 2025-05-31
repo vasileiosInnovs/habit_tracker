@@ -90,11 +90,11 @@ def main_menu(user):
 
         elif choice == "4":
             delete_habit(user)
-            
+
         elif choice == "5":
             login_or_register()
 
-        elif choice == "5":
+        elif choice == "6":
             print("Goodbye!")
             break
 
