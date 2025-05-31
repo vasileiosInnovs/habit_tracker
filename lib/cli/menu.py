@@ -73,8 +73,9 @@ def main_menu(user):
         print("1. Create a new habit")
         print("2. Log progress")
         print("3. View report")
-        print("4. Logout")
-        print("5. Quit")
+        print("4. Delete a habit")
+        print("5. Logout")
+        print("6. Quit")
 
         choice = input("Choose an option: ").strip()
 
@@ -88,6 +89,9 @@ def main_menu(user):
             view_report(user)
 
         elif choice == "4":
+            delete_habit(user)
+            
+        elif choice == "5":
             login_or_register()
 
         elif choice == "5":
@@ -154,3 +158,33 @@ def view_report(user):
 
     table = [[log.id, habit.name, log.status, log.timestamp.strftime("%Y-%m-%d %H:%M")] for log in logs]
     print(tabulate(table, headers=['ID', 'Habit', 'Status', 'Timestamp'], tablefmt="fancy_grid"))
+
+def delete_habit(user):
+    from lib.models.habit import Habit
+    from lib.models.log import Log
+
+    habits = session.query(Habit).filter_by(user_id=user.id).all()
+    if not habits:
+        print("❌ You have no habits to delete.")
+        return
+
+    print("\n🗑️ Your habits:")
+    for i, habit in enumerate(habits, 1):
+        print(f"{i}. {habit.name}")
+
+    try:
+        index = int(input("Select habit number to delete: "))
+        habit_to_delete = habits[index - 1]
+    except (ValueError, IndexError):
+        print("❌ Invalid selection.")
+        return
+
+    confirm = input(f"Are you sure you want to delete '{habit_to_delete.name}'? [y/N]: ").strip().lower()
+    if confirm == "y":
+        # Optionally delete associated logs first
+        session.query(Log).filter_by(habit_id=habit_to_delete.id).delete()
+        session.delete(habit_to_delete)
+        session.commit()
+        print(f"✅ Habit '{habit_to_delete.name}' has been deleted.")
+    else:
+        print("❎ Deletion cancelled.")
