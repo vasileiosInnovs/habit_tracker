@@ -92,7 +92,8 @@ def main_menu(user):
             delete_habit(user)
 
         elif choice == "5":
-            login_or_register()
+            print("Logging out...")
+            return 
 
         elif choice == "6":
             print("Goodbye!")
@@ -181,7 +182,6 @@ def delete_habit(user):
 
     confirm = input(f"Are you sure you want to delete '{habit_to_delete.name}'? [y/N]: ").strip().lower()
     if confirm == "y":
-        # Optionally delete associated logs first
         session.query(Log).filter_by(habit_id=habit_to_delete.id).delete()
         session.delete(habit_to_delete)
         session.commit()
