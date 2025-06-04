@@ -97,7 +97,7 @@ def main_menu(user):
 
         elif choice == "6":
             print("Goodbye!")
-            break
+            return "quit"
 
         else:
             print("❌ Invalid option. Try again.")
